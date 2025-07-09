@@ -1,5 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     const productList = document.querySelector(".product-list");
+    const cartCountElement = document.querySelector(".cart-count");
+    const emptyCartElement = document.querySelector(".empty-cart");
+    const cartItemsElement = document.querySelector(".cart-items");
+    const cartSummaryElement = document.querySelector(".cart-summary");
+    const totalAmountElement = document.querySelector(".total-amount");
 
     let cart = {};
     let productsData = [];
@@ -19,7 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const card = document.createElement("div");
         card.className = "product-card";
 
-        const isInCart = cart[product.name];
+        const isInCart = cart[product.name] && cart[product.name].quantity > 0;
+        if (isInCart) {
+            card.classList.add("selected");
+        }
 
         card.innerHTML = `
                     <img src="${product.image.desktop}" alt="${product.name}">
@@ -66,10 +74,123 @@ document.addEventListener("DOMContentLoaded", () => {
                         <p class="product-price">$${product.price.toFixed(2)}</p>
                     </div>
                 `;
+        
+        const addButton = card.querySelector(".add-to-cart-btn");
+        const incrementButton = card.querySelector(".increment-btn");
+        const decrementButton = card.querySelector(".decrement-btn");
+
+        if (addButton) {
+            addButton.addEventListener("click", () => addToCart(product));
+        }
+
+        if (incrementButton) {
+            incrementButton.addEventListener("click", () => 
+            incrementQuantity(product.name));
+        }
+
+        if (decrementButton) {
+            decrementButton.addEventListener("click", () =>
+            decrementQuantity(product.name));
+        }
 
         productList.appendChild(card);
         });
     }
 
-    renderProducts();
+    function addToCart(product) {
+        if (!cart[product.name]) {
+            cart[product.name] = {...product, quantity: 1 };
+        } else {
+            cart[product.name].quantity++;
+        }
+        updateCartUI();
+        renderProducts();
+    }
+
+    function incrementQuantity(productName) {
+        if (cart[productName]) {
+            cart[productName].quantity++;
+            updateCartUI();
+            renderProducts();
+        }
+    }
+
+    function decrementQuantity(productName) {
+        if (cart[productName] && cart[productName].quantity > 0) {
+            cart[productName].quantity--;
+
+        if (cart[productName].quantity === 0) {
+            delete cart[productName];
+        }
+        updateCartUI();
+        renderProducts();
+        }
+    }
+
+    function removeFromCart(productName) {
+        delete cart[productName];
+        updateCartUI();
+        renderProducts();
+    }
+
+    function updateCartUI() {
+        const cartItems = Object.values(cart);
+        const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+        const totalAmount = cartItems.reduce(
+            (sum, item) => sum + item.quantity * item.price, 0
+        );
+
+        cartCountElement.textContent = totalItems;
+
+        if (totalItems === 0) {
+            // Show empty cart
+            emptyCartElement.style.display = "block";
+            cartItemsElement.style.display = "none";
+            cartSummaryElement.style.display = "none";
+        } else {
+            // Show cart items
+            emptyCartElement.style.display = "none";
+            cartItemsElement.style.display = "block";
+            cartSummaryElement.style.display = "block";
+
+            // Render cart items
+            // Render cart items
+            cartItemsElement.innerHTML = cartItems
+                .map(
+                (item) => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-details">
+                                <span class="cart-item-quantity">${item.quantity}x</span>
+                                <span class="cart-item-price">@ $${item.price.toFixed(2)}</span>
+                                <span class="cart-item-total">$${(
+                                item.quantity * item.price
+                                ).toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <button class="remove-item" data-product="${
+                        item.name
+                        }" aria-label="Remove item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="none" viewBox="0 0 10 10">
+                            <path fill="#CAAFA7" d="M8.375 9.375 5 6 1.625 9.375l-1-1L4 5 .625 1.625l1-1L5 4 8.375.625l1 1L6 5l3.375 3.375-1 1Z"/>
+                        </svg>
+                        </button>
+                    </div>
+                    `
+                )
+                .join("");
+
+            // Update total amount
+            totalAmountElement.textContent = `$${totalAmount.toFixed(2)}`;
+
+            document.querySelectorAll(".remove-item").forEach((btn) => {
+                btn.addEventListener("click", (e) => {
+                    const productName = e.currentTarget.getAttribute("data-product");
+                    removeFromCart(productName);
+                });
+            });
+        }
+    }
+
 });
