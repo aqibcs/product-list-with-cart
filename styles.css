@@ -276,6 +276,7 @@ body {
   font-size: 0.875rem;
   color: var(--Rose-900);
 }
+
 .confirm-order-btn {
   width: 100%;
   background: var(--Red);
@@ -291,5 +292,144 @@ body {
 }
 
 .confirm-order-btn:hover {
-  background: hsl(14, 86%, 35%) ;
+  background: hsl(14, 86%, 35%);
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  width: 60%;
+  max-width: 592px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header img {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1.5rem;
+}
+
+.modal h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--Rose-900);
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.modal-header p {
+  color: var(--Rose-500);
+  margin-bottom: 2rem;
+}
+
+.confirmed-items {
+  background: var(--Rose-50);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: rem;
+}
+
+.confirmed-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--Rose-100);
+}
+
+.confirmed-item:last-child {
+  border-bottom: none;
+}
+
+.confirmed-item img {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.25rem;
+  object-fit: cover;
+}
+
+.confirmed-item-info {
+  flex: 1;
+}
+
+.confirmed-item-name {
+  font-weight: 600;
+  color: var(--Rose-900);
+  margin-bottom: 0.25rem;
+}
+
+.confirmed-item-details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+
+.confirmed-item-quantity {
+  color: var(--Red);
+  font-weight: 600;
+}
+
+.confirmed-item-price {
+  color: var(--Rose-500);
+  
+}
+
+.confirmed-item-total {
+  color: var(--Rose-900);
+  font-weight: 600;
+}
+
+.confirmed-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  font-weight: 500;
+}
+
+.confirmed-total span:first-child {
+  color: var(--Rose-500);
+  font-weight: 500;
+}
+
+.confirmed-total-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--Rose-900);
+}
+
+.start-new-order-btn {
+  width: 100%;
+  background: var(--Red);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 1rem;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.start-new-order-btn:hover {
+  background: hsl(14, 86%, 35%);
+}
+
