@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const cartItemsElement = document.querySelector(".cart-items");
     const cartSummaryElement = document.querySelector(".cart-summary");
     const totalAmountElement = document.querySelector(".total-amount");
+    const confirmOrderBtn = document.querySelector(".confirm-order-btn");
+    const modalOverlay = document.querySelector(".modal-overlay");
+    const confirmedItemsElement = document.querySelector(".confirmed-items");
+    const startNewOrderBtn = document.querySelector(".start-new-order-btn");
 
     let cart = {};
     let productsData = [];
@@ -135,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateCartUI() {
         const cartItems = Object.values(cart);
-        const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+        const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
         const totalAmount = cartItems.reduce(
             (sum, item) => sum + item.quantity * item.price, 0
         );
@@ -153,7 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
             cartItemsElement.style.display = "block";
             cartSummaryElement.style.display = "block";
 
-            // Render cart items
             // Render cart items
             cartItemsElement.innerHTML = cartItems
                 .map(
@@ -193,4 +196,64 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Confirm order 
+    confirmOrderBtn.addEventListener("click", () => {
+        showOrderConfirmation();
+    });
+
+    function showOrderConfirmation() {
+        const cartItems = Object.values(cart);
+        const totalAmount = cartItems.reduce(
+            (sum, item) => sum + item.quantity * item.price, 0
+        );
+
+        // Render confirmed items
+        confirmedItemsElement.innerHTML = `
+            ${cartItems
+                .map(
+                (item) => `
+                <div class="confirmed-item">
+                    <img src="${item.image.thumbnail}" alt="${item.name}">
+                    
+                    <div class="confirmed-item-info">
+                    <div class="confirmed-item-name">${item.name}</div>
+                    <div class="confirmed-item-details">
+                        <span class="confirmed-item-quantity">${item.quantity}x</span>
+                        <span class="confirmed-item-price">@ $${item.price.toFixed(
+                        2
+                        )}</span>
+                    </div>
+                    </div>
+
+                    <div class="confirmed-item-total">
+                    $${(item.quantity * item.price).toFixed(2)}
+                    </div>
+                </div>
+                `
+                )
+                .join("")}
+            <div class="confirmed-total">
+                <span>Order Total</span>
+                <span class="confirmed-total-amount">$${totalAmount.toFixed(2)}</span>
+            </div>
+            `;
+
+
+        modalOverlay.style.display = "flex";
+    }
+
+    // Start new order
+    startNewOrderBtn.addEventListener("click", () => {
+        cart = {};
+        updateCartUI();
+        renderProducts();
+        modalOverlay.style.display = "none";
+    });
+
+    // Close modal 
+    modalOverlay.addEventListener("click", (e) => {
+        if (e.target === modalOverlay) {
+            modalOverlay.style.display = "none"
+        }
+    });
 });
